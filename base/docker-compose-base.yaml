@@ -1,0 +1,155 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+services:
+
+  orderer.abosalah.com:
+    container_name: orderer.abosalah.com
+    extends:
+      file: peer-base.yaml
+      service: orderer-base
+    volumes:
+        - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ../crypto-config/ordererOrganizations/abosalah.com/orderers/orderer.abosalah.com/msp:/var/hyperledger/orderer/msp
+        - ../crypto-config/ordererOrganizations/abosalah.com/orderers/orderer.abosalah.com/tls/:/var/hyperledger/orderer/tls
+        - orderer.abosalah.com:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+
+  peer0.vw.abosalah.com:
+    container_name: peer0.vw.abosalah.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.vw.abosalah.com
+      - CORE_PEER_ADDRESS=peer0.vw.abosalah.com:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.vw.abosalah.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.vw.abosalah.com:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.vw.abosalah.com:7051
+      - CORE_PEER_LOCALMSPID=VWMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/vw.abosalah.com/peers/peer0.vw.abosalah.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/vw.abosalah.com/peers/peer0.vw.abosalah.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.vw.abosalah.com:/var/hyperledger/production
+    ports:
+      - 7051:7051
+
+  peer1.vw.abosalah.com:
+    container_name: peer1.vw.abosalah.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.vw.abosalah.com
+      - CORE_PEER_ADDRESS=peer1.vw.abosalah.com:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_CHAINCODEADDRESS=peer1.vw.abosalah.com:8052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.vw.abosalah.com:8051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.vw.abosalah.com:7051
+      - CORE_PEER_LOCALMSPID=VWMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/vw.abosalah.com/peers/peer1.vw.abosalah.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/vw.abosalah.com/peers/peer1.vw.abosalah.com/tls:/etc/hyperledger/fabric/tls
+        - peer1.vw.abosalah.com:/var/hyperledger/production
+
+    ports:
+      - 8051:8051
+
+  peer0.bmw.abosalah.com:
+    container_name: peer0.bmw.abosalah.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.bmw.abosalah.com
+      - CORE_PEER_ADDRESS=peer0.bmw.abosalah.com:9051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.bmw.abosalah.com:9052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.bmw.abosalah.com:9051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.bmw.abosalah.com:10051
+      - CORE_PEER_LOCALMSPID=BMWMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/bmw.abosalah.com/peers/peer0.bmw.abosalah.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/bmw.abosalah.com/peers/peer0.bmw.abosalah.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.bmw.abosalah.com:/var/hyperledger/production
+    ports:
+      - 9051:9051
+
+  peer1.bmw.abosalah.com:
+    container_name: peer1.bmw.abosalah.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.bmw.abosalah.com
+      - CORE_PEER_ADDRESS=peer1.bmw.abosalah.com:10051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:10051
+      - CORE_PEER_CHAINCODEADDRESS=peer1.bmw.abosalah.com:10052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:10052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.bmw.abosalah.com:10051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.bmw.abosalah.com:9051
+      - CORE_PEER_LOCALMSPID=BMWMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/bmw.abosalah.com/peers/peer1.bmw.abosalah.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/bmw.abosalah.com/peers/peer1.bmw.abosalah.com/tls:/etc/hyperledger/fabric/tls
+        - peer1.bmw.abosalah.com:/var/hyperledger/production
+    ports:
+      - 10051:10051
+
+
+  peer0.mb.abosalah.com:
+    container_name: peer0.mb.abosalah.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.mb.abosalah.com
+      - CORE_PEER_ADDRESS=peer0.mb.abosalah.com:11051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:11051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.mb.abosalah.com:11052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:11052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.mb.abosalah.com:11051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.mb.abosalah.com:12051
+      - CORE_PEER_LOCALMSPID=MBMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/mb.abosalah.com/peers/peer0.mb.abosalah.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/mb.abosalah.com/peers/peer0.mb.abosalah.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.mb.abosalah.com:/var/hyperledger/production
+    ports:
+      - 11051:11051
+
+  peer1.mb.abosalah.com:
+    container_name: peer1.mb.abosalah.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.mb.abosalah.com
+      - CORE_PEER_ADDRESS=peer1.mb.abosalah.com:12051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:12051
+      - CORE_PEER_CHAINCODEADDRESS=peer1.mb.abosalah.com:12052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:12052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.mb.abosalah.com:12051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.mb.abosalah.com:11051
+      - CORE_PEER_LOCALMSPID=MBMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/mb.abosalah.com/peers/peer1.mb.abosalah.com/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/mb.abosalah.com/peers/peer1.mb.abosalah.com/tls:/etc/hyperledger/fabric/tls
+        - peer1.mb.abosalah.com:/var/hyperledger/production
+    ports:
+      - 12051:12051

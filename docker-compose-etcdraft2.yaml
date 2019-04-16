@@ -1,0 +1,77 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer2.abosalah.com:
+  orderer3.abosalah.com:
+  orderer4.abosalah.com:
+  orderer5.abosalah.com:
+
+networks:
+  byfn:
+
+services:
+
+  orderer2.abosalah.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer2.abosalah.com
+    networks:
+    - byfn
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/abosalah.com/orderers/orderer2.abosalah.com/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/abosalah.com/orderers/orderer2.abosalah.com/tls/:/var/hyperledger/orderer/tls
+        - orderer2.abosalah.com:/var/hyperledger/production/orderer
+    ports:
+    - 8050:7050
+
+  orderer3.abosalah.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer3.abosalah.com
+    networks:
+    - byfn
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/abosalah.com/orderers/orderer3.abosalah.com/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/abosalah.com/orderers/orderer3.abosalah.com/tls/:/var/hyperledger/orderer/tls
+        - orderer3.abosalah.com:/var/hyperledger/production/orderer
+    ports:
+    - 9050:7050
+
+  orderer4.abosalah.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer4.abosalah.com
+    networks:
+    - byfn
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/abosalah.com/orderers/orderer4.abosalah.com/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/abosalah.com/orderers/orderer4.abosalah.com/tls/:/var/hyperledger/orderer/tls
+        - orderer4.abosalah.com:/var/hyperledger/production/orderer
+    ports:
+    - 10050:7050
+
+  orderer5.abosalah.com:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer5.abosalah.com
+    networks:
+    - byfn
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/abosalah.com/orderers/orderer5.abosalah.com/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/abosalah.com/orderers/orderer5.abosalah.com/tls/:/var/hyperledger/orderer/tls
+        - orderer5.abosalah.com:/var/hyperledger/production/orderer
+    ports:
+    - 11050:7050

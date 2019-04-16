@@ -1,0 +1,97 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  peer0.mb.abosalah.com:
+  peer1.mb.abosalah.com:
+
+networks:
+  byfn:
+
+services:
+
+  peer0.mb.abosalah.com:
+    container_name: peer0.mb.abosalah.com
+    extends:
+      file: base/peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.mb.abosalah.com
+      - CORE_PEER_ADDRESS=peer0.mb.abosalah.com:11051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:11051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.mb.abosalah.com:11052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:11052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.mb.abosalah.com:12051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.mb.abosalah.com:11051
+      - CORE_PEER_LOCALMSPID=MBMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./mb-artifacts/crypto-config/peerOrganizations/mb.abosalah.com/peers/peer0.mb.abosalah.com/msp:/etc/hyperledger/fabric/msp
+        - ./mb-artifacts/crypto-config/peerOrganizations/mb.abosalah.com/peers/peer0.mb.abosalah.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.mb.abosalah.com:/var/hyperledger/production
+    ports:
+      - 11051:11051
+    networks:
+      - byfn
+
+  peer1.mb.abosalah.com:
+    container_name: peer1.mb.abosalah.com
+    extends:
+      file: base/peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.mb.abosalah.com
+      - CORE_PEER_ADDRESS=peer1.mb.abosalah.com:12051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:12051
+      - CORE_PEER_CHAINCODEADDRESS=peer1.mb.abosalah.com:12052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:12052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.mb.abosalah.com:11051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.mb.abosalah.com:12051
+      - CORE_PEER_LOCALMSPID=MBMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./mb-artifacts/crypto-config/peerOrganizations/mb.abosalah.com/peers/peer1.mb.abosalah.com/msp:/etc/hyperledger/fabric/msp
+        - ./mb-artifacts/crypto-config/peerOrganizations/mb.abosalah.com/peers/peer1.mb.abosalah.com/tls:/etc/hyperledger/fabric/tls
+        - peer1.mb.abosalah.com:/var/hyperledger/production
+    ports:
+      - 12051:12051
+    networks:
+      - byfn
+
+
+  MBcli:
+    container_name: MBcli
+    image: hyperledger/fabric-tools:$IMAGE_TAG
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_ID=MBcli
+      - CORE_PEER_ADDRESS=peer0.mb.abosalah.com:11051
+      - CORE_PEER_LOCALMSPID=MBMSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/mb.abosalah.com/peers/peer0.mb.abosalah.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/mb.abosalah.com/peers/peer0.mb.abosalah.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/mb.abosalah.com/peers/peer0.mb.abosalah.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/mb.abosalah.com/users/Admin@mb.abosalah.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./../chaincode/:/opt/gopath/src/github.com/chaincode
+        - ./mb-artifacts/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./crypto-config/peerOrganizations/vw.abosalah.com:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/vw.abosalah.com
+        - ./crypto-config/peerOrganizations/bmw.abosalah.com:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/bmw.abosalah.com
+        - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+    depends_on:
+      - peer0.mb.abosalah.com
+      - peer1.mb.abosalah.com
+    networks:
+      - byfn
