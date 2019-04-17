@@ -23,14 +23,14 @@ LANGUAGE=`echo "$LANGUAGE" | tr [:upper:] [:lower:]`
 COUNTER=1
 MAX_RETRY=10
 
-CC_SRC_PATH="github.com/chaincode/chaincode_example02/go/"
-if [ "$LANGUAGE" = "node" ]; then
-	CC_SRC_PATH="/opt/gopath/src/github.com/chaincode/chaincode_example02/node/"
-fi
+# CC_SRC_PATH="github.com/chaincode/chaincode_example02/go/"
+# if [ "$LANGUAGE" = "node" ]; then
+# 	CC_SRC_PATH="/opt/gopath/src/github.com/chaincode/chaincode_example02/node/"
+# fi
 
-if [ "$LANGUAGE" = "java" ]; then
-	CC_SRC_PATH="/opt/gopath/src/github.com/chaincode/chaincode_example02/java/"
-fi
+# if [ "$LANGUAGE" = "java" ]; then
+# 	CC_SRC_PATH="/opt/gopath/src/github.com/chaincode/chaincode_example02/java/"
+# fi
 
 echo "Channel name : "$CHANNEL_NAME
 
@@ -83,30 +83,30 @@ echo "Updating anchor peers for bmw..."
 updateAnchorPeers 0 2
 
 ## Install chaincode on peer0.vw and peer0.bmw
-echo "Installing chaincode on peer0.vw..."
-installChaincode 0 1
-echo "Install chaincode on peer0.bmw..."
-installChaincode 0 2
+# echo "Installing chaincode on peer0.vw..."
+# installChaincode 0 1
+# echo "Install chaincode on peer0.bmw..."
+# installChaincode 0 2
 
 # Instantiate chaincode on peer0.bmw
-echo "Instantiating chaincode on peer0.bmw..."
-instantiateChaincode 0 2
+# echo "Instantiating chaincode on peer0.bmw..."
+# instantiateChaincode 0 2
 
 # Query chaincode on peer0.vw
-echo "Querying chaincode on peer0.vw..."
-chaincodeQuery 0 1 100
+# echo "Querying chaincode on peer0.vw..."
+# chaincodeQuery 0 1 100
 
 # Invoke chaincode on peer0.vw and peer0.bmw
-echo "Sending invoke transaction on peer0.vw peer0.bmw..."
-chaincodeInvoke 0 1 0 2
+# echo "Sending invoke transaction on peer0.vw peer0.bmw..."
+# chaincodeInvoke 0 1 0 2
 
 ## Install chaincode on peer1.bmw
-echo "Installing chaincode on peer1.bmw..."
-installChaincode 1 2
+# echo "Installing chaincode on peer1.bmw..."
+# installChaincode 1 2
 
 # Query on chaincode on peer1.bmw, check if the result is 90
-echo "Querying chaincode on peer1.bmw..."
-chaincodeQuery 1 2 90
+# echo "Querying chaincode on peer1.bmw..."
+# chaincodeQuery 1 2 90
 
 echo
 echo "========= All GOOD, BYFN execution completed =========== "
