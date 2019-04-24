@@ -1,0 +1,125 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer.abosalah.com:
+  peer0.vw.abosalah.com:
+  peer1.vw.abosalah.com:
+  peer0.bmw.abosalah.com:
+  peer1.bmw.abosalah.com:
+  peer0.mb.abosalah.com:
+  peer1.mb.abosalah.com:
+
+networks:
+  byfn:
+services:
+  ca0:
+    image: hyperledger/fabric-ca:1.4
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-vw
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.vw.abosalah.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/df25252e0c507e40953fbd95b9202e4e4d5bfcf6a8ea7737653f09f484645426_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.vw.abosalah.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/df25252e0c507e40953fbd95b9202e4e4d5bfcf6a8ea7737653f09f484645426_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/vw.abosalah.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerVW
+    networks:
+      - byfn
+
+  ca1:
+    image: hyperledger/fabric-ca:1.4
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-bmw
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.bmw.abosalah.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/54ea86c011a80c1a675460b1a51153dae390b494f830d6b02d2a2beb13d50599_sk
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.bmw.abosalah.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/54ea86c011a80c1a675460b1a51153dae390b494f830d6b02d2a2beb13d50599_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/bmw.abosalah.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerBMW
+    networks:
+      - byfn
+
+  ca2:
+    image: hyperledger/fabric-ca:1.4
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-mb
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.mb.abosalah.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/caf378076907a885ac76bc132d9ea9697dc9b7c80a511b54c600133bcf9260c2_sk
+    ports:
+      - "9054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.mb.abosalah.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/caf378076907a885ac76bc132d9ea9697dc9b7c80a511b54c600133bcf9260c2_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/mb.abosalah.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peerMB
+    networks:
+      - byfn
+
+  orderer.abosalah.com:
+    extends:
+      file:   base/docker-compose-base.yaml
+      service: orderer.abosalah.com
+    container_name: orderer.abosalah.com
+    networks:
+      - byfn
+
+  peer0.vw.abosalah.com:
+    container_name: peer0.vw.abosalah.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.vw.abosalah.com
+    networks:
+      - byfn
+
+  peer1.vw.abosalah.com:
+    container_name: peer1.vw.abosalah.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.vw.abosalah.com
+    networks:
+      - byfn
+
+  peer0.bmw.abosalah.com:
+    container_name: peer0.bmw.abosalah.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.bmw.abosalah.com
+    networks:
+      - byfn
+
+  peer1.bmw.abosalah.com:
+    container_name: peer1.bmw.abosalah.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.bmw.abosalah.com
+    networks:
+      - byfn
+
+  peer0.mb.abosalah.com:
+    container_name: peer0.mb.abosalah.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer0.mb.abosalah.com
+    networks:
+      - byfn
+
+  peer1.mb.abosalah.com:
+    container_name: peer1.mb.abosalah.com
+    extends:
+      file:  base/docker-compose-base.yaml
+      service: peer1.mb.abosalah.com
+    networks:
+      - byfn
